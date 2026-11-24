@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {createEconomy,transition} from './dist/economy.mjs';
+let s=createEconomy();const run=a=>s=transition(s,{agent:'chief-node',...a});
+for(let i=0;i<3;i++)run({type:'session',session:{id:'demo-'+i,status:'settled',inputTokens:1,outputTokens:1,latencyMs:1}});
+assert.equal(s.accounts['chief-node'].points,30);
+assert.throws(()=>run({type:'session',session:s.sessions[0]}));
+for(const kind of ['prism','coil','ember'])run({type:'craft',kind});
+assert.equal(s.accounts['chief-node'].points,0);
+const prism=s.items[0].id;run({type:'transfer',itemId:prism,recipient:'clone-01'});
+assert.equal(s.accounts['clone-01'].points,0);assert.throws(()=>run({type:'assemble'}));
+run({type:'transfer',agent:'clone-01',itemId:prism,recipient:'chief-node'});run({type:'assemble'});
+assert.equal(s.items.filter(i=>i.consumed).length,3);assert.throws(()=>run({type:'assemble'}));
+run({type:'list',itemId:s.items.at(-1).id,price:1000});const listingId=s.listings[0].id;
+run({type:'buy',agent:'clone-01',listingId});assert.equal(s.items.at(-1).owner,'clone-01');assert.equal(s.accounts['chief-node'].demoMilliFlop,11000);assert.equal(s.accounts['clone-01'].demoMilliFlop,9000);assert.throws(()=>run({type:'buy',agent:'clone-02',listingId}));
+run({type:'session',session:{id:'demo-failed',status:'failed',inputTokens:0,outputTokens:0,latencyMs:1}});assert.equal(s.accounts['chief-node'].points,0);
+assert.throws(()=>run({type:'transfer-points',recipient:'clone-01',points:1}));
+console.log('PASS: duplicate receipts, personal points, material transfers, consumed ingredients, single-sale settlement, balance conservation, failed sessions.');

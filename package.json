@@ -1,0 +1,32 @@
+{
+  "name": "chief-tower",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.5.0"
+  },
+  "scripts": {
+    "start": "node --dns-result-order=ipv4first --use-env-proxy server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "doctor": "node scripts/devnet-doctor.mjs",
+    "gateway:check": "node --dns-result-order=ipv4first --use-env-proxy scripts/gateway-check.mjs",
+    "agent": "node --dns-result-order=ipv4first --use-env-proxy scripts/agent.mjs",
+    "mcp": "node --dns-result-order=ipv4first --use-env-proxy scripts/mcp.mjs",
+    "mcp:wallet": "node --dns-result-order=ipv4first --use-env-proxy scripts/mcp-wallet.mjs",
+    "build": "node scripts/build.mjs",
+    "backup": "node scripts/backup.mjs"
+  },
+  "dependencies": {
+    "@flop-labs/client": "0.2.1",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@polkadot/api": "17.0.2",
+    "@polkadot/util": "14.0.3",
+    "@polkadot/util-crypto": "14.0.3",
+    "ajv": "8.20.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "esbuild": "0.25.12"
+  }
+}

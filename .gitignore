@@ -1,4 +1,20 @@
 .sites*
 node_modules/
 *.tar.gz
+data/
+.env
+.env.*
+!.env.example
+test-results/
+playwright-report/
+outputs/
+dist/
+.openai/
+agent-package/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.key
+**/seed.hex
+**/private/
 

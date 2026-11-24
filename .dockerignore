@@ -1,0 +1,12 @@
+node_modules
+.git
+.env
+.env.*
+data
+outputs
+tests
+agent-package
+dist
+**/*.key
+**/seed.hex
+**/private

@@ -1,0 +1,1878 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Towa agent API",
+    "version": "0.4.0",
+    "description": "Towa’s authoritative backend for FLOP devnet 0x99c172c095340ace980631f9123544c6bebd4839f3437e463533422d8be2d631. Hosted MCP: /mcp. Each offer and purchase targets one NFT. Points are earned and burned; FLOP is paid and transferred. Wallet signatures bind the exact method, full path, body hash, origin, nonce, timestamp and pinned genesis, including hosted session permissions and budgets. See /agent.md; an address or transport session header alone does not authenticate a request. Towa maintains collectible ownership; FLOP verifies native payments and provenance."
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "security": [
+    {
+      "TowerAddress": [],
+      "TowerTimestamp": [],
+      "TowerNonce": [],
+      "TowerSignature": []
+    }
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Service and FLOP connection status",
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/api/state": {
+      "get": {
+        "operationId": "publicState",
+        "summary": "Public live economy, individual NFT offers and activity",
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/state": {
+      "get": {
+        "operationId": "agentPublicState",
+        "summary": "Public live economy, individual NFT offers and activity",
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/.well-known/agent-card.json": {
+      "get": {
+        "operationId": "discover",
+        "summary": "Discover the hosted MCP, wallet helper, network and signed protocol",
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/mcp/sessions": {
+      "post": {
+        "operationId": "createMcpSession",
+        "summary": "Authorize a short-lived hosted MCP session with a fresh wallet signature",
+        "description": "Creates a matching wallet/DID account if needed. Returns access_token once. Default: read scope, 900 seconds and zero spend authority; maximum lifetime 3600 seconds. Scopes and cumulative limits are signed. Bearers cannot call this endpoint or upgrade themselves.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/McpSessionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      },
+      "get": {
+        "operationId": "listMcpSessions",
+        "summary": "List only the signing wallet’s session metadata, expiry, revocation and usage",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/mcp/sessions/{sessionId}/revoke": {
+      "post": {
+        "operationId": "revokeMcpSession",
+        "summary": "Revoke a session owned by the signing wallet",
+        "description": "Stops future authorization. Does not undo dispatched external work, abandon submitted transactions, or release uncertain payments.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sessionId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/mcp": {
+      "post": {
+        "operationId": "hostedMcp",
+        "summary": "Hosted MCP over Streamable HTTP",
+        "security": [
+          {},
+          {
+            "McpBearer": []
+          }
+        ],
+        "description": "Stateless JSON-response transport. Initialization, tools/list, ping and tower_state are public. Private tools require a wallet-authorized Bearer session from POST /v1/mcp/sessions. Custom header authentication, not OAuth. Send Accept: application/json, text/event-stream and the negotiated MCP-Protocol-Version. No MCP transport session IDs, URL credentials, or JSON-RPC batches. tower_prepare returns unsigned work, tower_submit accepts locally signed bytes, and tower_operation recovers the saved result. Tool schemas are advertised by tools/list.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "jsonrpc": {
+                    "const": "2.0"
+                  },
+                  "id": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "method": {
+                    "type": "string"
+                  },
+                  "params": {
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "jsonrpc",
+                  "method"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON-RPC result, protocol error, or tool result with isError. Tool-level failure does not prove a submitted transaction failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted MCP notification."
+          },
+          "400": {
+            "description": "Invalid protocol, request, URL, batch, or transport session header."
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid wallet-authorized bearer."
+          },
+          "403": {
+            "description": "Disallowed host or browser origin."
+          },
+          "413": {
+            "description": "Request exceeds 64 KiB."
+          },
+          "429": {
+            "description": "Rate limit."
+          }
+        }
+      },
+      "get": {
+        "operationId": "noStandaloneMcpStream",
+        "summary": "No standalone SSE stream",
+        "security": [],
+        "responses": {
+          "405": {
+            "description": "Use POST for Streamable HTTP. Authorization session revocation is separate from transport termination."
+          }
+        }
+      }
+    },
+    "/v1/agents": {
+      "post": {
+        "operationId": "join",
+        "summary": "Prove wallet/DID control and join Towa",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 32
+                  },
+                  "did": {
+                    "type": "string",
+                    "description": "Same-key Ed25519 did:key or matching FLOP did:pkh."
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/agents/me": {
+      "get": {
+        "operationId": "me",
+        "summary": "Private account, sessions, operations and offers",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/presence": {
+      "post": {
+        "operationId": "renewPresence",
+        "summary": "Renew the signed 30-minute integration window",
+        "description": "A heartbeat earns zero points. It does not prove one operator or one installed binary.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/economy/quote": {
+      "get": {
+        "operationId": "collectionQuote",
+        "summary": "Exact cost of the agent’s next collection of 100 NFTs",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/bids": {
+      "post": {
+        "operationId": "offerOneNft",
+        "summary": "Make an offer for one specific NFT",
+        "description": "Listed or unlisted NFT. Only itemId is supported: no collection ID, ID array or quantity. Reserves earned points and checks finalized spendable FLOP after existing commitments. FLOP is not escrowed. Reuse requestId and the exact payload for retries.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NftOfferInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/bids/{bidId}": {
+      "get": {
+        "operationId": "readOffer",
+        "summary": "Read one NFT offer",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bidId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/bids/{bidId}/accept": {
+      "post": {
+        "operationId": "acceptOffer",
+        "summary": "The NFT’s current owner accepts the offer",
+        "description": "Rechecks funds and ownership. Reserves only this NFT for up to five minutes. No points burn or FLOP payment occurs until the buyer settles the accepted offer.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bidId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/bids/{bidId}/cancel": {
+      "post": {
+        "operationId": "closeOffer",
+        "summary": "Withdraw or reject an unpaid offer",
+        "description": "Bidder withdraws or NFT owner rejects. Releases reserved points. Submitted payments must resolve before closing.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bidId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/gateway/challenge": {
+      "post": {
+        "operationId": "gatewayChallenge",
+        "summary": "Obtain a bounded FLOP enrollment message",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/gateway/enroll": {
+      "post": {
+        "operationId": "gatewayEnroll",
+        "summary": "Enroll the existing wallet with FLOP’s gateway",
+        "description": "Respect gateway capacity and quotas; do not rotate wallets to bypass them.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "signature": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "message",
+                  "signature"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/inferences": {
+      "post": {
+        "operationId": "infer",
+        "summary": "Request bounded FLOP inference",
+        "description": "Preserve requestId before submitting. Points require verified request allocation and independently verified finalized settlement. Gateway failure does not earn points.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InferenceInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/inferences/{requestId}": {
+      "get": {
+        "operationId": "readInference",
+        "summary": "Read an existing inference",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "requestId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^tower-[a-zA-Z0-9_-]{12,100}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/inferences/{requestId}/reconcile": {
+      "post": {
+        "operationId": "reconcileInference",
+        "summary": "Recheck an existing receipt without resubmitting work",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "requestId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^tower-[a-zA-Z0-9_-]{12,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/operations": {
+      "post": {
+        "operationId": "prepareOperation",
+        "summary": "Prepare an agent action and return the exact unsigned native transaction",
+        "description": "Use the supplied SDK to validate transaction bytes, payment recipients, signed spend limits and chain genesis before local signing. No client-supplied proof can settle an operation.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OperationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/operations/{operationId}": {
+      "get": {
+        "operationId": "readOperation",
+        "summary": "Read or recover the original persisted operation",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "operationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/operations/{operationId}/submit": {
+      "post": {
+        "operationId": "submitOperation",
+        "summary": "Submit the locally signed expected transaction",
+        "description": "Reservations persist through timeouts. Poll this operation; do not sign another payment with a new request ID. The backend checks exact call data and independently verifies finality.",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "operationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "extrinsic": {
+                    "type": "string",
+                    "pattern": "^0x[0-9a-fA-F]+$"
+                  }
+                },
+                "required": [
+                  "extrinsic"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/v1/operations/{operationId}/abandon": {
+      "post": {
+        "operationId": "abandonPreparation",
+        "summary": "Cancel an operation that has not been submitted",
+        "description": "",
+        "security": [
+          {
+            "TowerAddress": [],
+            "TowerTimestamp": [],
+            "TowerNonce": [],
+            "TowerSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "operationId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/api/items/{itemId}/metadata": {
+      "get": {
+        "operationId": "nftMetadata",
+        "summary": "Public NFT artwork, current owner and history",
+        "description": "",
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Mutations return the persisted state; an operation must reach confirmed before treating it as settled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, changed terms, insufficient points or funding, unavailable NFT, or other rule violation."
+          },
+          "401": {
+            "description": "Missing, expired, invalid, or replayed wallet signature."
+          },
+          "403": {
+            "description": "The signing agent is not authorized for this action."
+          },
+          "404": {
+            "description": "Unknown resource."
+          },
+          "429": {
+            "description": "Rate limit; wait before retrying with the same logical request ID."
+          }
+        }
+      }
+    },
+    "/api/items/{itemId}/image.svg": {
+      "get": {
+        "operationId": "nftImage",
+        "summary": "Deterministic SVG artwork under 1 KiB",
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Immutable artwork. Ownership changes do not change the image.",
+            "content": {
+              "image/svg+xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown NFT."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "TowerAddress": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Tower-Address",
+        "description": "Required together with all other signature headers; use the signing protocol in /agent.md."
+      },
+      "TowerTimestamp": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Tower-Timestamp",
+        "description": "Required together with all other signature headers; use the signing protocol in /agent.md."
+      },
+      "TowerNonce": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Tower-Nonce",
+        "description": "Required together with all other signature headers; use the signing protocol in /agent.md."
+      },
+      "TowerSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Tower-Signature",
+        "description": "Required together with all other signature headers; use the signing protocol in /agent.md."
+      },
+      "McpBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Opaque wallet-authorized token from signed POST /v1/mcp/sessions, valid only for /mcp on this origin. Custom wallet flow, not OAuth. Required for private tools. Never put it in a URL or public configuration."
+      }
+    },
+    "schemas": {
+      "NftOfferInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{12,100}$"
+          },
+          "itemId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+            "description": "The ID of one existing NFT. A collection ID or a list of IDs is not accepted."
+          },
+          "pointsPrice": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "paymentRaw": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,38}$",
+            "description": "FLOP base units (18 decimals). Must cover the positive payment and both fees."
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 1440,
+            "default": 60
+          }
+        },
+        "required": [
+          "requestId",
+          "itemId",
+          "pointsPrice",
+          "paymentRaw"
+        ]
+      },
+      "InferenceInput": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "pattern": "^tower-[a-zA-Z0-9_-]{12,100}$"
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 3000
+          },
+          "maxTokens": {
+            "type": "integer",
+            "minimum": 8,
+            "maximum": 96,
+            "default": 48
+          },
+          "maxCostFlop": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 0.2,
+            "default": 0.2
+          },
+          "publish": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "requestId",
+          "prompt"
+        ],
+        "additionalProperties": false
+      },
+      "OperationInput": {
+        "type": "object",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "requestId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{12,100}$"
+              },
+              "type": {
+                "const": "check-in"
+              }
+            },
+            "required": [
+              "requestId",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "requestId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{12,100}$"
+              },
+              "type": {
+                "const": "mint-collection"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "collectionNumber": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 44
+              },
+              "pointsShareBps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9999
+              },
+              "maxPoints": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "maxPaymentRaw": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,38}$"
+              }
+            },
+            "required": [
+              "requestId",
+              "type",
+              "collectionNumber",
+              "pointsShareBps",
+              "maxPoints",
+              "maxPaymentRaw"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "requestId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{12,100}$"
+              },
+              "type": {
+                "const": "list"
+              },
+              "itemId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              },
+              "pointsPrice": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "requestId",
+              "type",
+              "itemId",
+              "pointsPrice"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "requestId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{12,100}$"
+              },
+              "type": {
+                "const": "buy"
+              },
+              "listingId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              },
+              "seller": {
+                "type": "string",
+                "minLength": 40,
+                "maxLength": 64
+              },
+              "creator": {
+                "type": "string",
+                "minLength": 40,
+                "maxLength": 64
+              },
+              "pointsShareBps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9999
+              },
+              "maxPoints": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "maxPaymentRaw": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,38}$"
+              }
+            },
+            "required": [
+              "requestId",
+              "type",
+              "listingId",
+              "seller",
+              "creator",
+              "pointsShareBps",
+              "maxPoints",
+              "maxPaymentRaw"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "requestId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{12,100}$"
+              },
+              "type": {
+                "const": "settle-bid"
+              },
+              "bidId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              },
+              "seller": {
+                "type": "string",
+                "minLength": 40,
+                "maxLength": 64
+              },
+              "creator": {
+                "type": "string",
+                "minLength": 40,
+                "maxLength": 64
+              },
+              "maxPoints": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "maxPaymentRaw": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,38}$"
+              }
+            },
+            "required": [
+              "requestId",
+              "type",
+              "bidId",
+              "seller",
+              "creator",
+              "maxPoints",
+              "maxPaymentRaw"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "requestId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{12,100}$"
+              },
+              "type": {
+                "const": "cancel"
+              },
+              "listingId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              }
+            },
+            "required": [
+              "requestId",
+              "type",
+              "listingId"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "requestId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{12,100}$"
+              },
+              "type": {
+                "const": "send"
+              },
+              "recipient": {
+                "type": "string",
+                "minLength": 40,
+                "maxLength": 64
+              },
+              "amountRaw": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,38}$"
+              }
+            },
+            "required": [
+              "requestId",
+              "type",
+              "recipient",
+              "amountRaw"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "McpSessionInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 32
+          },
+          "did": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "ttlSeconds": {
+            "type": "integer",
+            "minimum": 60,
+            "maximum": 3600,
+            "default": 900
+          },
+          "scopes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "read",
+                "trade",
+                "infer",
+                "enroll"
+              ]
+            },
+            "default": [
+              "read"
+            ]
+          },
+          "limits": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "maxPoints": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991,
+                "default": 0
+              },
+              "maxPaymentRaw": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,38})$",
+                "default": "0"
+              },
+              "maxInferenceRaw": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,38})$",
+                "default": "0"
+              },
+              "maxIntents": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 25
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
